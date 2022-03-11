@@ -1,0 +1,23 @@
+sudo: required
+
+services: 
+  - docker
+
+before_install: 
+  - docker build -t saturnizm/multi-docker -f ./client/Dockerfile.dev .
+  
+script:
+  - docker run -e CI=true saturnizm/multi-docker npm test -- --coverage
+
+after_success:
+    - docker build -t saturnizm/multi-client ./client
+    - docker build -t saturnizm/multi-nginx ./nginx
+    - docker build -t saturnizm/multi-server ./server
+    - docker build -t saturnizm/multi-worker ./worker
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push saturnizm/multi-client
+    - docker push saturnizm/multi-nginx
+    - docker push saturnizm/multi-server
+    - docker push saturnizm/multi-worker
+
+language: generic 
