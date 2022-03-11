@@ -4,10 +4,10 @@ services:
   - docker
 
 before_install: 
-  - docker build -t saturnizm/multi-docker -f ./client/Dockerfile.dev .
+  - docker build -t saturnizm/react-test -f ./client/Dockerfile.dev .
   
 script:
-  - docker run -e CI=true saturnizm/multi-docker npm test -- --coverage
+  - docker run -e CI=true saturnizm/react-test npm test -- --coverage
 
 after_success:
     - docker build -t saturnizm/multi-client ./client
